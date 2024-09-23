@@ -1,0 +1,3 @@
+[submodule "src/lib/MadCakeUtil-ts"]
+	path = src/lib/MadCakeUtil-ts
+	url = https://github.com/KosRud/MadCakeUtil-ts
