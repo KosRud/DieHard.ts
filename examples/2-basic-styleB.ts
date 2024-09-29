@@ -1,5 +1,5 @@
 import { Die, DieHard, RollFn } from 'DieHard';
-import { Example } from '../src/example.ts';
+import { Example } from '../src/Example.ts';
 
 export { example };
 
