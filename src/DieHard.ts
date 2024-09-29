@@ -4,16 +4,14 @@ import '../submodules/MadCakeUtil-ts/augmentations.ts';
 
 export { DieHard };
 
-type Comparator<T> = (a: T, b: T) => boolean;
-
 class DieHard<T> {
 	schedule: RollerReplay[] = [[]];
 	roller = new Roller(this.scheduleSimulation.bind(this));
 	outcomes: DieSide<T>[] = [];
-	comparator: Comparator<T>;
+	compareFn: (a: T, b: T) => number;
 
-	constructor(isEqual: Comparator<T>) {
-		this.comparator = isEqual;
+	constructor(compareFn: (a: T, b: T) => number) {
+		this.compareFn = compareFn;
 	}
 
 	private scheduleSimulation(
@@ -27,8 +25,8 @@ class DieHard<T> {
 
 	private trackOutcome(outcome: DieSide<T>) {
 		// check if this outcome was recorded before
-		const existingRecord = this.outcomes.find((record) =>
-			this.comparator(record.value, outcome.value)
+		const existingRecord = this.outcomes.find(
+			(record) => this.compareFn(record.value, outcome.value) == 0
 		);
 
 		// add probability to existing record
@@ -57,6 +55,6 @@ class DieHard<T> {
 			this.trackOutcome({ value, probability });
 		}
 
-		return new Die<T>(this.outcomes).normalize();
+		return new Die<T>(this.outcomes).normalize().sort(this.compareFn);
 	}
 }
