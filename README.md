@@ -1,1 +1,1 @@
-# DieHard.ts
+# diehard-ts
