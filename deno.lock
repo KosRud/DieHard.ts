@@ -1,0 +1,58 @@
+{
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "jsr:@std/assert": "jsr:@std/assert@1.0.6",
+      "jsr:@std/internal@^1.0.4": "jsr:@std/internal@1.0.4"
+    },
+    "jsr": {
+      "@std/assert@1.0.6": {
+        "integrity": "1904c05806a25d94fe791d6d883b685c9e2dcd60e4f9fc30f4fc5cf010c72207",
+        "dependencies": [
+          "jsr:@std/internal@^1.0.4"
+        ]
+      },
+      "@std/internal@1.0.4": {
+        "integrity": "62e8e4911527e5e4f307741a795c0b0a9e6958d0b3790716ae71ce085f755422"
+      }
+    }
+  },
+  "redirects": {
+    "https://deno.land/x/generator_helpers/monkey_patch.ts": "https://deno.land/x/generator_helpers@0.0.0/monkey_patch.ts"
+  },
+  "remote": {
+    "https://deno.land/x/docopt@v1.0.7/mod.ts": "e3268e295d402259afaebfca30b300788ef4a40a6b3dc442619374689bb9e444",
+    "https://deno.land/x/docopt@v1.0.7/src/docopt.ts": "8c760730201453e3ed24937ddf8751868177cc5dec89472aef90b675d6b40efe",
+    "https://deno.land/x/docopt@v1.0.7/src/error.ts": "d0cf90ea605653efc9f543f5dbff85d32dd4eab5b0c8cb6a8873fbc2fe12b357",
+    "https://deno.land/x/docopt@v1.0.7/src/interoperability.ts": "6353ecfea6c1374710e1e939419897dbb230eb9abd3ff3a9a057d06e46229c08",
+    "https://deno.land/x/docopt@v1.0.7/src/parse.ts": "ef9402318c2ed88ce543335b394adc8d3ca9e5dbe336c1c2a9ac4b70adc56c83",
+    "https://deno.land/x/docopt@v1.0.7/src/pattern.ts": "281be05c8613b3c4015c50e638c3502e311949a3e88d94d78cacda6b175f52f6",
+    "https://deno.land/x/docopt@v1.0.7/src/token.ts": "fd680a204af72e99361598bdb36ba78cad1f5ac3e9acf70ff13f883c19ad97b7",
+    "https://deno.land/x/docopt@v1.0.7/src/utils.ts": "52c2a03c68a0ecfe70146e1183ae55bac632dbaf094cf13efdcf2deb178c507d",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/Iterator.ts": "fe2ba59596746df621a6df7cb8ae2ef455a1fc3fc34904b03d5931af3662700d",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/as_indexed_pairs.ts": "c661cab04f0d7789f7d0eca0b6da2210aaca65583ff25f807d91f0983b7b4809",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/drop.ts": "5cc2fa21d1905da7bcc4b70060eb7176505747204d648584e05ab05457585b56",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/every.ts": "f04a6cfa559ebdee0addb1036732fc5f95d584d882cc0e4c8890363fd27bf473",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/filter.ts": "9ac7a88b7d9210b7095455c6cf57d859cce3a51d098c35021bc12b874a50c407",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/find.ts": "42f64d5eb8a7ce619968108a905f97a0e713c63ec96deda1d6fe13336c85cc88",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/flat_map.ts": "6093670fbc861d03557ae2f97546ceaa2f14617f0cb102199206990fefdb7adb",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/for_each.ts": "5d0c9febde313854993d5eabf0052b8ded09d93b24a29638fa56c0e49f4ac286",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/function_types.ts": "1e91b7aa3b947ab9c5843f19a4874e04a1135f4c0c5accdf68a9a6d49d7d114a",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/main.ts": "46bbb2b0641609bf50322110469c76f51e25a05705439255b91bfd31c7c176b7",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/map.ts": "28e157aecc97b302903b093edf2753f77605799dfb243545fe3f1f658603988c",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/range.ts": "db0313ce26867aeb4f8a164b85e2216b8cf36dfc7a11f31bf26109058f9707ea",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/reduce.ts": "a910f10f39eac2766624b9370168d816481e59f68ec96d4e0feefb92ffc21013",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/some.ts": "6f35acceb8b6057d58b2901bcbfe1dbdd741b5e4524410da2de487f515cfb783",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/take.ts": "bc164d63bd4eb7cc2e3a6fc10d01dcee5ab5812ad2dac9c3ce21687cda71c54a",
+    "https://deno.land/x/generator_helpers@0.0.0/lib/to_array.ts": "21183c45e670816f4c1ccf8d7992ec87c1583cb1eb2573622d37f0d0ba5768ae",
+    "https://deno.land/x/generator_helpers@0.0.0/monkey_patch.ts": "c2288701fc5120daeefa80e635b3aa37bb9d040bb66e8c5f97b8d9551a733df1",
+    "https://raw.githubusercontent.com/KosRud/MadCakeUtil-ts/7fb53eb74793fd21c703e883fc3385d3a5bb970b/StrictEventTarget.ts": "b21b4160f90c826fcaa8b6ce391e943c6c16d931b281413adf3f63a85642a17a",
+    "https://raw.githubusercontent.com/KosRud/MadCakeUtil-ts/7fb53eb74793fd21c703e883fc3385d3a5bb970b/augmentations.ts": "60d8c63b1489c8679f2c28aecd0a3755b54714ac8ea858b7715025c21834a84c",
+    "https://raw.githubusercontent.com/KosRud/MadCakeUtil-ts/7fb53eb74793fd21c703e883fc3385d3a5bb970b/mod.ts": "1efb3da6956cfd1820c5044533a3879c72e21a0d481794c216797bfd011a5944",
+    "https://raw.githubusercontent.com/KosRud/MadCakeUtil-ts/7fb53eb74793fd21c703e883fc3385d3a5bb970b/src/Array.ts": "480dfe13d79227d182f3d18d348530b05cce6f6d7c6fc639b23322d17933f5e8",
+    "https://raw.githubusercontent.com/KosRud/MadCakeUtil-ts/7fb53eb74793fd21c703e883fc3385d3a5bb970b/src/augment-Array.ts": "074c08151d76bee8d331345a075315724c26b011b88186d7f8a4592a48550dfc",
+    "https://raw.githubusercontent.com/KosRud/MadCakeUtil-ts/7fb53eb74793fd21c703e883fc3385d3a5bb970b/src/augment-Console.ts": "05bb53e41ce514cc7e318a4ea7b01765fdb70a70fb29bc4e2f8022706c9dbdf9",
+    "https://raw.githubusercontent.com/KosRud/MadCakeUtil-ts/7fb53eb74793fd21c703e883fc3385d3a5bb970b/tsUtil.ts": "34a680e6da57992ebb81e773000581fd672986b12e7c3cb480f387c36b248539",
+    "https://raw.githubusercontent.com/KosRud/MadCakeUtil-ts/7fb53eb74793fd21c703e883fc3385d3a5bb970b/useDefer.ts": "ac6744c985b4ca6c30d68895e61ea29ce8c838bfe5b4a7ef2d56f94442ec2d02"
+  }
+}

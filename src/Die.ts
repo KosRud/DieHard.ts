@@ -5,6 +5,9 @@ import { deepReadonly } from 'MadCakeUtil/mod.ts';
 
 type DieSide<T> = { probability: number; value: T };
 
+/**
+ * A die has one or more sides. Each side has a value and a probability. The probabilities of all sides must add up to 1. The values can be of any type, e.g. `number` for polyhedral dice, `string` for dice with symbols on them, or js objects for more complex simulations.
+ */
 class Die<T> {
 	private sides: DieSide<T>[];
 
