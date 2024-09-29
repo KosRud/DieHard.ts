@@ -44,7 +44,7 @@ class Roller {
 		const sides = die.getSides();
 
 		// schedule simulation for all sides except first
-		this.scheduleSimulation(this.history, ...sides.slice(0));
+		this.scheduleSimulation(this.history, ...sides.slice(1));
 
 		// record current roll in history
 		this.history.push(sides[0]);
