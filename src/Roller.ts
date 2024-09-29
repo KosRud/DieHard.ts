@@ -14,53 +14,53 @@ type RollerReplay = DieSide<unknown>[];
 type RollFn = <T>(die: Die<T>) => DeepReadonly<DieSide<T>['value']>;
 
 class Roller {
-	private replay: RollerReplay = [];
-	private replayCursor: number = 0;
-	private scheduleSimulation: ScheduleSimulationCallback;
+	#replay: RollerReplay = [];
+	#replayCursor: number = 0;
+	#scheduleSimulation: ScheduleSimulationCallback;
 
 	constructor(scheduleSimulation: ScheduleSimulationCallback) {
-		this.scheduleSimulation = scheduleSimulation;
+		this.#scheduleSimulation = scheduleSimulation;
 	}
 
 	setup(replay: RollerReplay): RollFn {
-		this.replay = replay;
-		this.replayCursor = 0;
-		return this.roll.bind(this);
+		this.#replay = replay;
+		this.#replayCursor = 0;
+		return this.#roll.bind(this);
 	}
 
 	public MakeShortcut<T>(die: Die<T>) {
-		return () => this.roll(die);
+		return () => this.#roll(die);
 	}
 
-	private roll<T>(die: Die<T>): DeepReadonly<T> {
+	#roll<T>(die: Die<T>): DeepReadonly<T> {
 		return useDefer((defer) => {
 			defer(() => {
-				this.replayCursor++;
+				this.#replayCursor++;
 			});
 
 			// replay a roll, if available
 			// and increment replay cursor
-			if (this.replay.length > this.replayCursor) {
-				const result = this.replay[this.replayCursor].value;
+			if (this.#replay.length > this.#replayCursor) {
+				const result = this.#replay[this.#replayCursor].value;
 				return result as DeepReadonly<T>;
 			}
 
 			// otherwise, make new roll
-			return this.newRoll(die);
+			return this.#newRoll(die);
 		});
 	}
 
 	/**
 	 * Return first side. Schedule all possible alternatives to be simulated.
 	 */
-	private newRoll<T>(die: Die<T>): DeepReadonly<T> {
+	#newRoll<T>(die: Die<T>): DeepReadonly<T> {
 		const sides = die.getSides();
 
 		// schedule simulation for all sides except first
-		this.scheduleSimulation(this.replay, ...sides.slice(1));
+		this.#scheduleSimulation(this.#replay, ...sides.slice(1));
 
 		// record current roll in history
-		this.replay.push(sides[0]);
+		this.#replay.push(sides[0]);
 
 		// return first side
 		return sides[0].value;

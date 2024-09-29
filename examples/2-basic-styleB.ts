@@ -51,5 +51,4 @@ const expected = [
 const example: Example<typeof expected> = {
 	run,
 	expected,
-	name: 'basic: style B',
 };

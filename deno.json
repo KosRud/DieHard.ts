@@ -12,6 +12,7 @@
 	},
 	"tasks": {
 		"doc": "deno doc --html --name=\"diehard-ts\" ./mod.ts",
+		"doc:lint": "deno doc --lint --html --name=\"diehard-ts\" ./mod.ts",
 		"example": "deno run --allow-all ./src/runExample.ts"
 	}
 }
