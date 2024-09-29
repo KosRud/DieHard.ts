@@ -56,4 +56,8 @@ class Die<T> {
 
 		return this;
 	}
+
+	sort(compareFn: (a: DieSide<T>, b: DieSide<T>) => number) {
+		this.sides.sort(compareFn);
+	}
 }

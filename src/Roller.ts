@@ -3,6 +3,7 @@ export type { RollerReplay };
 
 import { DieSide, Die } from './Die.ts';
 import { DeepReadonly } from '../submodules/MadCakeUtil-ts/mod.ts';
+import { deferScope } from '../submodules/MadCakeUtil-ts/deferScope.ts';
 
 type ScheduleSimulationCallback = (
 	replay: RollerReplay,
@@ -26,15 +27,21 @@ class Roller {
 	}
 
 	roll<T>(die: Die<T>): DeepReadonly<DieSide<T>['value']> {
-		// replay a roll, if available
-		// and increment replay cursor
-		if (this.replay.length > this.replayCursor) {
-			const result = this.replay[this.replayCursor++].value;
-			return result as DeepReadonly<DieSide<T>['value']>;
-		}
+		return deferScope((defer) => {
+			defer(() => {
+				this.replayCursor++;
+			});
 
-		// otherwise, make new roll
-		return this.newRoll(die);
+			// replay a roll, if available
+			// and increment replay cursor
+			if (this.replay.length > this.replayCursor) {
+				const result = this.replay[this.replayCursor].value;
+				return result as DeepReadonly<DieSide<T>['value']>;
+			}
+
+			// otherwise, make new roll
+			return this.newRoll(die);
+		});
 	}
 
 	/**
