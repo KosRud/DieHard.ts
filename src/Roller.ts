@@ -1,9 +1,13 @@
-export { Roller, RollerReplay };
+export { Roller };
+export type { RollerReplay };
 
-import { DieSide, Die } from './Die';
-import { DeepReadonly } from './lib/MadCakeUtil-ts';
+import { DieSide, Die } from './Die.ts';
+import { DeepReadonly } from './lib/MadCakeUtil-ts/mod.ts';
 
-type ScheduleSimulationCallback = (...sides: DieSide<unknown>[]) => void;
+type ScheduleSimulationCallback = (
+	replay: RollerReplay,
+	...sides: DieSide<unknown>[]
+) => void;
 
 type RollerReplay = DieSide<unknown>[];
 
@@ -25,7 +29,7 @@ class Roller {
 		// replay a roll from history, if available
 		// and increment history cursor
 		if (this.history.length > this.historyCursor) {
-			const result = this.history[this.historyCursor++];
+			const result = this.history[this.historyCursor++].value;
 			return result as DeepReadonly<DieSide<T>['value']>;
 		}
 
@@ -36,11 +40,14 @@ class Roller {
 	/**
 	 * Return first side. Schedule all possible alternatives to be simulated.
 	 */
-	private newRoll<T>(die: Die<T>) {
+	private newRoll<T>(die: Die<T>): DeepReadonly<DieSide<T>['value']> {
 		const sides = die.getSides();
 
 		// schedule simulation for all sides except first
-		this.scheduleSimulation(...sides.slice(0));
+		this.scheduleSimulation(this.history, ...sides.slice(0));
+
+		// record current roll in history
+		this.history.push(sides[0]);
 
 		// return first side
 		return sides[0].value;

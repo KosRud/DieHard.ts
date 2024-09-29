@@ -1,6 +1,7 @@
-export { Die, DieSide };
+export { Die };
+export type { DieSide };
 
-import { deepReadonly, DeepReadonly } from './lib/MadCakeUtil-ts';
+import { deepReadonly } from './lib/MadCakeUtil-ts/mod.ts';
 
 type DieSide<T> = { probability: number; value: T };
 
@@ -15,22 +16,44 @@ class Die<T> {
 		this.sides = sides;
 	}
 
-	static simple(numSides: number);
-	static simple<T>(sides: T[]);
+	static simple(numSides: number): Die<number>;
+	static simple<T>(sides: T[]): Die<number>;
 	static simple<T>(arg: number | T[]) {
 		if (Array.isArray(arg)) {
-			const sideValues = arg;
-			const probability = 1 / arg.length;
-			const sides = arg.map((side) => ({ probability, value: side }));
-			return new Die(sides);
+			return Die.simpleFromArray(arg);
 		}
 
-		const numSides: number = arg;
+		return Die.simpleFromNumber(arg);
+	}
+
+	private static simpleFromNumber(numSides: number) {
 		const probability = 1 / numSides;
 		const sides = Array.from({ length: numSides }, (_, id) => ({
 			probability,
 			value: id + 1,
 		}));
 		return new Die(sides);
+	}
+
+	private static simpleFromArray<T>(sideValues: T[]) {
+		const probability = 1 / sideValues.length;
+		const sides = sideValues.map((side) => ({
+			probability,
+			value: side,
+		}));
+		return new Die(sides);
+	}
+
+	normalize() {
+		const sumProbabilities = this.sides.reduce<number>(
+			(sum, current) => sum + current.probability,
+			0
+		);
+
+		for (const side of this.sides) {
+			side.probability /= sumProbabilities;
+		}
+
+		return this;
 	}
 }
