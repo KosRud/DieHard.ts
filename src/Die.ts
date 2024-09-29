@@ -14,8 +14,17 @@ class Die<T> {
 	 */
 	#sides: DieSide<T>[];
 
-	getSides(): DeepReadonly<DieSide<T>[]> {
-		return deepReadonly(this.#sides);
+	getSides(roundingDigits?: number): DeepReadonly<DieSide<T>[]> {
+		if (!roundingDigits) {
+			return deepReadonly(this.#sides);
+		}
+
+		return deepReadonly(
+			this.#sides.map((side) => ({
+				...side,
+				probability: Number(side.probability.toFixed(roundingDigits)),
+			}))
+		);
 	}
 
 	constructor(sides: DieSide<T>[]) {
@@ -66,5 +75,26 @@ class Die<T> {
 	sort(compareFn: (a: T, b: T) => number): this {
 		this.#sides.sort((a, b) => compareFn(a.value, b.value));
 		return this;
+	}
+
+	interpret<K>(fn: (value: T) => K) {
+		const newSides: DieSide<K>[] = [];
+
+		for (const side of this.#sides) {
+			const newValue = fn(side.value);
+			const newSide = newSides.find(
+				(newSide) => newSide.value == newValue
+			);
+			if (newSide) {
+				newSide.probability += side.probability;
+			} else {
+				newSides.push({
+					probability: side.probability,
+					value: newValue,
+				});
+			}
+		}
+
+		return new Die(newSides);
 	}
 }

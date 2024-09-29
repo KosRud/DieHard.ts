@@ -18,33 +18,33 @@ function run() {
 	const dieHard = new DieHard<number>((a, b) => a - b);
 	const simulationOutcomes = dieHard.simulate(simulateGame);
 
-	return simulationOutcomes.getSides();
+	return simulationOutcomes.getSides(2);
 }
 
 const expected = [
 	{
 		value: 2,
-		probability: 0.08333333333333334,
+		probability: 0.08,
 	},
 	{
 		value: 3,
-		probability: 0.16666666666666669,
+		probability: 0.17,
 	},
 	{
 		value: 4,
-		probability: 0.25000000000000006,
+		probability: 0.25,
 	},
 	{
 		value: 5,
-		probability: 0.25000000000000006,
+		probability: 0.25,
 	},
 	{
 		value: 6,
-		probability: 0.16666666666666669,
+		probability: 0.17,
 	},
 	{
 		value: 7,
-		probability: 0.08333333333333334,
+		probability: 0.08,
 	},
 ];
 
