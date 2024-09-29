@@ -77,10 +77,10 @@ class Die<T> {
 		return this;
 	}
 
-	interpret<K>(fn: (value: T) => K) {
+	interpret<K>(fn: (value: DeepReadonly<T>) => K) {
 		const newSides: DieSide<K>[] = [];
 
-		for (const side of this.#sides) {
+		for (const side of this.getSides()) {
 			const newValue = fn(side.value);
 			const newSide = newSides.find(
 				(newSide) => newSide.value == newValue
@@ -97,4 +97,34 @@ class Die<T> {
 
 		return new Die(newSides);
 	}
+
+	combine<K, U>(
+		other: Die<K>,
+		combineFn: (a: DeepReadonly<T>, b: DeepReadonly<K>) => U
+	) {
+		const newSides: DieSide<U>[] = [];
+
+		for (const thisSide of this.getSides()) {
+			for (const otherSide of other.getSides()) {
+				const newValue = combineFn(thisSide.value, otherSide.value);
+				const newProbability =
+					thisSide.probability * otherSide.probability;
+				const newSide = newSides.find(
+					(newSide) => newSide.value == newValue
+				);
+				if (newSide) {
+					newSide.probability += newProbability;
+				} else {
+					newSides.push({
+						probability: newProbability,
+						value: newValue,
+					});
+				}
+			}
+		}
+
+		return new Die(newSides);
+	}
+
+	// TODO: https://kosrud.github.io/dice-pool-calc/classes/index.Die.html
 }
