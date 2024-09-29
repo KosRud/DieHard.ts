@@ -21,4 +21,4 @@ function tester(roller: Roller) {
 
 const dieHard = new DieHard((a, b) => a == b);
 const stats = dieHard.simulate(tester);
-console.JSON(stats);
+// console.JSON(stats);
