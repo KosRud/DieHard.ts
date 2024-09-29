@@ -1,4 +1,4 @@
-import { Roller, RollerReplay } from './Roller.ts';
+import { Roller, RollerReplay, RollFn } from './Roller.ts';
 import { Die, DieSide } from './Die.ts';
 import '../submodules/MadCakeUtil-ts/augmentations.ts';
 
@@ -40,12 +40,12 @@ class DieHard<T> {
 		this.outcomes.push(outcome);
 	}
 
-	simulate(func: (roler: Roller) => T) {
+	simulate(fn: (roler: RollFn) => T) {
 		while (this.schedule.isNotEmpty()) {
 			const replay = this.schedule.pop();
-			this.roller.setup(replay);
+			const rollFn = this.roller.setup(replay);
 
-			const value = func(this.roller);
+			const value = fn(rollFn);
 			const probability = replay.reduce(
 				(probability, nextDieSide) =>
 					probability * nextDieSide.probability,
