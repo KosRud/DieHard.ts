@@ -1,4 +1,4 @@
-import { Die, DieSide } from 'DieHard';
+import { Die } from 'DieHard';
 import { Example } from '../src/Example.ts';
 
 export { example };
