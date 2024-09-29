@@ -32,11 +32,10 @@ class DieHard<T> {
 		[key in keyof T]: T[key];
 	}): DiceShortcuts<T> {
 		const entries = Object.entries(dice);
-		return Object.fromEntries(
-			entries.map(([key, value]) => {
-				return [key, () => this.roller.MakeShortcut(value)];
-			})
-		) as {
+		const newEntries = entries.map(([key, value]) => {
+			return [key, this.roller.MakeShortcut(value)];
+		});
+		return Object.fromEntries(newEntries) as {
 			[key in keyof T]: T[key] extends Die<infer D> ? () => D : never;
 		};
 	}

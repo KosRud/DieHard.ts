@@ -30,7 +30,9 @@ function styleB() {
 }
 
 console.JSON(styleA());
+
 console.log(`
 ------------- alternative style (same result) -------------
 `);
+
 console.JSON(styleB());
