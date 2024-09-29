@@ -3,6 +3,11 @@ import { Die, DieSide } from './Die.ts';
 import '../submodules/MadCakeUtil-ts/augmentations.ts';
 
 export { DieHard };
+export type { DiceShortcuts };
+
+type DiceShortcuts<T extends Record<string, Die<any>>> = {
+	[key in keyof T]: T[key] extends Die<infer V> ? () => V : never;
+};
 
 class DieHard<T> {
 	schedule: RollerReplay[] = [[]];
@@ -25,7 +30,7 @@ class DieHard<T> {
 
 	MakeShortcuts<T extends Record<string, Die<any>>>(dice: {
 		[key in keyof T]: T[key];
-	}): { [key in keyof T]: T[key] extends Die<infer V> ? () => V : never } {
+	}): DiceShortcuts<T> {
 		const entries = Object.entries(dice);
 		return Object.fromEntries(
 			entries.map(([key, value]) => {
