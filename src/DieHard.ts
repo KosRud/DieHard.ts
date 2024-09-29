@@ -1,6 +1,6 @@
 import { Roller, RollerReplay, RollFn } from './Roller.ts';
 import { Die, DieSide } from './Die.ts';
-import '../submodules/MadCakeUtil-ts/augmentations.ts';
+import 'MadCakeUtil/augmentations.ts';
 
 export { DieHard };
 export type { DiceShortcuts };

@@ -1,7 +1,7 @@
 import { Die } from './src/Die.ts';
 import { DiceShortcuts, DieHard } from './src/DieHard.ts';
 import { RollFn } from './src/Roller.ts';
-import './submodules/MadCakeUtil-ts/augmentations.ts';
+import 'MadCakeUtil/augmentations.ts';
 
 const dice = {
 	d3: Die.simple(3),

@@ -1,6 +1,3 @@
 [submodule "src/deps/MadCakeUtil-ts"]
 	path = src/deps/MadCakeUtil-ts
 	url = https://github.com/KosRud/MadCakeUtil-ts.git
-[submodule "submodules/MadCakeUtil-ts"]
-	path = submodules/MadCakeUtil-ts
-	url = https://github.com/KosRud/MadCakeUtil-ts.git

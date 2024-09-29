@@ -3,5 +3,8 @@
 		"rules": {
 			"exclude": ["no-explicit-any"]
 		}
+	},
+	"imports": {
+		"MadCakeUtil/": "https://raw.githubusercontent.com/KosRud/MadCakeUtil-ts/7fb53eb74793fd21c703e883fc3385d3a5bb970b/"
 	}
 }

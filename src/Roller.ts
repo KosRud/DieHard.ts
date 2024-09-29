@@ -2,8 +2,8 @@ export { Roller };
 export type { RollerReplay, RollFn };
 
 import { DieSide, Die } from './Die.ts';
-import { DeepReadonly } from '../submodules/MadCakeUtil-ts/mod.ts';
-import { useDefer } from '../submodules/MadCakeUtil-ts/useDefer.ts';
+import { DeepReadonly } from 'MadCakeUtil/mod.ts';
+import { useDefer } from 'MadCakeUtil/useDefer.ts';
 
 type ScheduleSimulationCallback = (
 	replay: RollerReplay,
@@ -32,7 +32,7 @@ class Roller {
 		return () => this.roll(die);
 	}
 
-	private roll<T>(die: Die<T>): DeepReadonly<DieSide<T>['value']> {
+	private roll<T>(die: Die<T>): DeepReadonly<T> {
 		return useDefer((defer) => {
 			defer(() => {
 				this.replayCursor++;
@@ -42,7 +42,7 @@ class Roller {
 			// and increment replay cursor
 			if (this.replay.length > this.replayCursor) {
 				const result = this.replay[this.replayCursor].value;
-				return result as DeepReadonly<DieSide<T>['value']>;
+				return result as DeepReadonly<T>;
 			}
 
 			// otherwise, make new roll
@@ -53,7 +53,7 @@ class Roller {
 	/**
 	 * Return first side. Schedule all possible alternatives to be simulated.
 	 */
-	private newRoll<T>(die: Die<T>): DeepReadonly<DieSide<T>['value']> {
+	private newRoll<T>(die: Die<T>): DeepReadonly<T> {
 		const sides = die.getSides();
 
 		// schedule simulation for all sides except first
