@@ -8,11 +8,6 @@ type DieSide<T> = { probability: number; value: T };
 class Die<T> {
 	private sides: DieSide<T>[];
 
-	// TODO
-	// static MakeShortcuts(dice: infer){
-	// 	return;
-	// }
-
 	public getSides() {
 		return deepReadonly(this.sides);
 	}

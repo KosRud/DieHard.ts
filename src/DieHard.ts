@@ -23,6 +23,19 @@ class DieHard<T> {
 		}
 	}
 
+	MakeShortcuts<T extends Record<string, Die<any>>>(dice: {
+		[key in keyof T]: T[key];
+	}): { [key in keyof T]: T[key] extends Die<infer V> ? () => V : never } {
+		const entries = Object.entries(dice);
+		return Object.fromEntries(
+			entries.map(([key, value]) => {
+				return [key, () => this.roller.MakeShortcut(value)];
+			})
+		) as {
+			[key in keyof T]: T[key] extends Die<infer D> ? () => D : never;
+		};
+	}
+
 	private trackOutcome(outcome: DieSide<T>) {
 		// check if this outcome was recorded before
 		const existingRecord = this.outcomes.find(

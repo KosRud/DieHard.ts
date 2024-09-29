@@ -28,6 +28,10 @@ class Roller {
 		return this.roll.bind(this);
 	}
 
+	public MakeShortcut<T>(die: Die<T>) {
+		return () => this.roll(die);
+	}
+
 	private roll<T>(die: Die<T>): DeepReadonly<DieSide<T>['value']> {
 		return useDefer((defer) => {
 			defer(() => {
