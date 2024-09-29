@@ -1,5 +1,6 @@
 import { Roller, RollerReplay } from './Roller.ts';
 import { Die, DieSide } from './Die.ts';
+import '../submodules/MadCakeUtil-ts/augmentations.ts';
 
 export { DieHard };
 

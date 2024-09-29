@@ -1,7 +1,7 @@
 export { Die };
 export type { DieSide };
 
-import { deepReadonly } from './lib/MadCakeUtil-ts/mod.ts';
+import { deepReadonly } from '../submodules/MadCakeUtil-ts/mod.ts';
 
 type DieSide<T> = { probability: number; value: T };
 

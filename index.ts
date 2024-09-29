@@ -1,7 +1,7 @@
 import { Die } from './src/Die.ts';
 import { DieHard } from './src/DieHard.ts';
 import { Roller } from './src/Roller.ts';
-import './src/lib/MadCakeUtil-ts/augmentations.ts';
+import './submodules/MadCakeUtil-ts/augmentations.ts';
 
 function tester(roller: Roller) {
 	const results: number[] = [];

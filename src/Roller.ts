@@ -2,7 +2,7 @@ export { Roller };
 export type { RollerReplay };
 
 import { DieSide, Die } from './Die.ts';
-import { DeepReadonly } from './lib/MadCakeUtil-ts/mod.ts';
+import { DeepReadonly } from '../submodules/MadCakeUtil-ts/mod.ts';
 
 type ScheduleSimulationCallback = (
 	replay: RollerReplay,
