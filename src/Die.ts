@@ -9,9 +9,6 @@ type DieSide<T> = { probability: number; value: T };
  * A die has one or more sides. Each side has a value and a probability. The probabilities of all sides must add up to 1. The values can be of any type, e.g. `number` for polyhedral dice, `string` for dice with symbols on them, or `object` for more complex simulations.
  */
 class Die<T> {
-	/**
-	 * @internal
-	 */
 	#sides: DieSide<T>[];
 
 	getSides(roundingDigits?: number): DeepReadonly<DieSide<T>[]> {
@@ -105,6 +102,9 @@ class Die<T> {
 	}
 
 	interpret<K>(fn: (value: DeepReadonly<T>) => K) {
+		// we could re-use `Die.combine()` as a special case with only one die,
+		// but this is more efficient
+
 		const result = Die.#empty<K>();
 
 		for (const side of this.getSides()) {
