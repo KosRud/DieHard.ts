@@ -23,7 +23,7 @@ function getSuccessLevel(n: number) {
 }
 
 function run() {
-	const d100: Die<number> = Die.simple(100);
+	const d100: Die<number> = Die.d(100);
 	return d100.interpret(getSuccessLevel).getSides(2);
 }
 

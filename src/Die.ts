@@ -46,21 +46,16 @@ class Die<T> {
 		this.#sides = sides;
 	}
 
-	static simple(numSides: number): Die<number>;
-	static simple<T>(sides: readonly T[]): Die<T>;
-	static simple<T>(arg: number | readonly T[]) {
-		if (Array.isArray(arg)) {
-			return Die.#simpleFromArray(arg);
-		}
-
-		return Die.#simpleFromNumber(arg as number);
+	static uniform<T>(values: readonly T[]): Die<T> {
+		const probability = 1 / values.length;
+		const sides = values.map((side) => ({
+			probability,
+			value: side,
+		}));
+		return new Die(sides);
 	}
 
-	static #empty<K>() {
-		return new Die<K>([]);
-	}
-
-	static #simpleFromNumber(numSides: number): Die<number> {
+	static d(numSides: number): Die<number> {
 		const probability = 1 / numSides;
 		const sides = Array.from({ length: numSides }, (_, id) => ({
 			probability,
@@ -69,13 +64,26 @@ class Die<T> {
 		return new Die(sides);
 	}
 
-	static #simpleFromArray<T>(sideValues: T[]): Die<T> {
-		const probability = 1 / sideValues.length;
-		const sides = sideValues.map((side) => ({
-			probability,
-			value: side,
-		}));
-		return new Die(sides);
+	static nd(numDice: number, numSides: number): Die<number> {
+		if (numDice <= 0) {
+			throw new Error(`incorrect number of dice in a pool: ${numDice}`);
+		}
+
+		const die = Die.d(numSides);
+
+		if (numDice == 1) {
+			return die;
+		}
+
+		const dice = Array.from({ length: numDice - 1 }).fill(
+			die
+		) as Die<number>[];
+
+		return die.combine((values) => values.reduce((a, b) => a + b), ...dice);
+	}
+
+	static #empty<K>() {
+		return new Die<K>([]);
 	}
 
 	normalize(): this {

@@ -19,10 +19,10 @@ function run() {
 	const suits = ['clubs', 'diamonds', 'hearts', 'spades'] as const;
 	const suitsWithWildcard = [...suits, 'wildcard'] as const;
 
-	const slotA = Die.simple(suits);
-	const slotB = Die.simple(suits);
-	const slotC = Die.simple(suitsWithWildcard);
-	const slotPrizeMultiplier = Die.simple(4);
+	const slotA = Die.uniform(suits);
+	const slotB = Die.uniform(suits);
+	const slotC = Die.uniform(suitsWithWildcard);
+	const slotPrizeMultiplier = Die.d(4);
 
 	const result = slotPrizeMultiplier.combine(
 		([prizeMultiplier, suitA, suitB, suitC]) => {
@@ -43,6 +43,7 @@ function run() {
 }
 
 const expected = [
+	// no prize
 	{
 		probability: 0.9,
 		value: 0,

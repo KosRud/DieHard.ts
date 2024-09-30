@@ -4,8 +4,8 @@ import { Example } from '../src/Example.ts';
 export { example };
 
 const dice = {
-	d3: Die.simple(3),
-	d4: Die.simple(4),
+	d3: Die.d(3),
+	d4: Die.d(4),
 };
 
 function simulateGame({ d3, d4 }: DiceShortcuts<typeof dice>) {
