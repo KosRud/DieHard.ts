@@ -148,6 +148,51 @@ class Die<T> {
 		}
 	}
 
+	#partition<T>(arr: T[], n: number) {
+		const parts: T[][] = [];
+		for (let i = 0; i <= arr.length - n; i += n) {
+			parts.push(arr.slice(i, i + n));
+		}
+		if (arr.length % n) {
+			parts.push(arr.slice(-(arr.length % n)));
+		}
+		return parts;
+	}
+
+	lod(level: number): T extends number ? this : never;
+	lod(
+		level: number,
+		combine: (sides: DeepReadonly<DieSide<T>[]>) => DieSide<T>,
+		compareFn: (a: T, b: T) => number
+	): this;
+	lod(
+		level: number,
+		combine?: (sides: DeepReadonly<DieSide<T>[]>) => DieSide<T>,
+		compareFn?: (a: T, b: T) => number
+	) {
+		function compareNumbers(a: number, b: number) {
+			return a - b;
+		}
+		const nonNummCompareFn =
+			compareFn ?? (compareNumbers as (a: T, b: T) => number);
+		this.sort(nonNummCompareFn);
+		const parts = this.#partition(this.#sides, level);
+		function combineNumbers(sides: DeepReadonly<DieSide<number>[]>) {
+			let probability = 0;
+			let value = 0;
+			for (const side of sides) {
+				probability += side.probability;
+				value += side.value;
+			}
+			value /= sides.length;
+			return { probability, value };
+		}
+		const nonNullCombine =
+			combine ?? (combineNumbers as NonNullable<typeof combine>);
+		this.#sides = parts.map((part) => nonNullCombine(deepReadonly(part)));
+		return this;
+	}
+
 	static reduce<T>(
 		dice: Die<T>[],
 		fn: (cur: DeepReadonly<T>, next: DeepReadonly<T>) => T
