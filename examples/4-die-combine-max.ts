@@ -10,9 +10,8 @@ export { example };
 function run() {
 	const d6 = Die.d(6);
 	const pool = Array.from({ length: 3 }).map(() => d6);
-	const result = Die.combine(
-		(outcomes) => outcomes.reduce((a, b) => Math.max(a, b)),
-		...pool
+	const result = Die.combine(pool, (outcomes) =>
+		outcomes.reduce((a, b) => Math.max(a, b))
 	);
 	return result.sort((a, b) => a - b).getSides(2);
 }

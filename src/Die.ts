@@ -76,7 +76,7 @@ class Die<T> {
 			die
 		) as (typeof die)[];
 
-		return Die.combine((values) => values.reduce((a, b) => a + b), ...dice);
+		return Die.reduce(dice, (a, b) => a + b);
 	}
 
 	static #empty<K>() {
@@ -146,9 +146,29 @@ class Die<T> {
 		}
 	}
 
+	static reduce<T>(
+		dice: Die<T>[],
+		fn: (cur: DeepReadonly<T>, next: DeepReadonly<T>) => T
+	) {
+		return dice.reduce((cur, next) => {
+			const result = Die.#empty<T>();
+
+			for (const curSide of cur.getSides()) {
+				for (const nextSide of next.getSides()) {
+					const value = fn(curSide.value, nextSide.value);
+					const probability =
+						curSide.probability * nextSide.probability;
+					result.#infuseOutcome({ value, probability });
+				}
+			}
+
+			return result;
+		});
+	}
+
 	static combine<T, K extends unknown[], U>(
-		combineFn: (values: DeepReadonly<K>) => U,
-		...dice: { [k in keyof K]: Die<K[k]> }
+		dice: { [k in keyof K]: Die<K[k]> },
+		combineFn: (values: DeepReadonly<K>) => U
 	) {
 		const result = Die.#empty<U>();
 
