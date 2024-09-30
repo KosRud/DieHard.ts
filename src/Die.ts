@@ -101,7 +101,7 @@ class Die<T> {
 		return this;
 	}
 
-	interpret<K>(fn: (value: DeepReadonly<T>) => K) {
+	interpret<K>(fn: (value: DeepReadonly<T>) => K): Die<K> {
 		// we could re-use `Die.combine()` as a special case with only one die,
 		// but this is more efficient
 
@@ -149,7 +149,7 @@ class Die<T> {
 	static reduce<T>(
 		dice: Die<T>[],
 		fn: (cur: DeepReadonly<T>, next: DeepReadonly<T>) => T
-	) {
+	): Die<T> {
 		return dice.reduce((cur, next) => {
 			const result = Die.#empty<T>();
 
@@ -169,13 +169,11 @@ class Die<T> {
 	static combine<T, K extends unknown[], U>(
 		dice: { [k in keyof K]: Die<K[k]> },
 		combineFn: (values: DeepReadonly<K>) => U
-	) {
+	): Die<U> {
 		const result = Die.#empty<U>();
 
 		Die.#combineRecursive(combineFn, [], result, dice);
 
 		return result.normalize();
 	}
-
-	// TODO: https://kosrud.github.io/dice-pool-calc/classes/index.Die.html
 }
