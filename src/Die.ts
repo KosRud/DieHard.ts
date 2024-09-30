@@ -27,18 +27,37 @@ class Die<T> {
 		);
 	}
 
+	#infuseOutcome(outcome: DieSide<T>) {
+		const existingSide = this.#sides.find(
+			(newSide) => newSide.value == outcome.value
+		);
+
+		if (existingSide) {
+			existingSide.probability += outcome.probability;
+		} else {
+			this.#sides.push({
+				probability: outcome.probability,
+				value: outcome.value,
+			});
+		}
+	}
+
 	constructor(sides: DieSide<T>[]) {
 		this.#sides = sides;
 	}
 
 	static simple(numSides: number): Die<number>;
-	static simple<T>(sides: T[]): Die<number>;
-	static simple<T>(arg: number | T[]) {
+	static simple<T>(sides: readonly T[]): Die<T>;
+	static simple<T>(arg: number | readonly T[]) {
 		if (Array.isArray(arg)) {
 			return Die.#simpleFromArray(arg);
 		}
 
-		return Die.#simpleFromNumber(arg);
+		return Die.#simpleFromNumber(arg as number);
+	}
+
+	static #empty<K>() {
+		return new Die<K>([]);
 	}
 
 	static #simpleFromNumber(numSides: number): Die<number> {
@@ -78,52 +97,65 @@ class Die<T> {
 	}
 
 	interpret<K>(fn: (value: DeepReadonly<T>) => K) {
-		const newSides: DieSide<K>[] = [];
+		const result = Die.#empty<K>();
 
 		for (const side of this.getSides()) {
-			const newValue = fn(side.value);
-			const newSide = newSides.find(
-				(newSide) => newSide.value == newValue
-			);
-			if (newSide) {
-				newSide.probability += side.probability;
-			} else {
-				newSides.push({
-					probability: side.probability,
-					value: newValue,
-				});
-			}
+			result.#infuseOutcome({
+				probability: side.probability,
+				value: fn(side.value),
+			});
 		}
 
-		return new Die(newSides);
+		return result.normalize();
 	}
 
-	combine<K, U>(
-		other: Die<K>,
-		combineFn: (a: DeepReadonly<T>, b: DeepReadonly<K>) => U
+	#combineRecursive<K extends unknown[], U>(
+		combineFn: (values: DeepReadonly<[T, ...K]>) => U,
+		rolledSides: DeepReadonly<DieSide<unknown>[]>,
+		result: Die<U>,
+		dice: Die<any>[]
 	) {
-		const newSides: DieSide<U>[] = [];
+		if (dice.length == 0) {
+			const rolledSidesTyped = rolledSides as [
+				DieSide<T>,
+				...{ [k in keyof K]: DieSide<K[k]> }
+			];
+			const probability = rolledSidesTyped.reduce(
+				(probability, nextSide) => probability * nextSide.probability,
+				1
+			);
+			const rolledValues = rolledSidesTyped.map((side) => side.value);
+			const value = combineFn(rolledValues as DeepReadonly<[T, ...K]>);
 
-		for (const thisSide of this.getSides()) {
-			for (const otherSide of other.getSides()) {
-				const newValue = combineFn(thisSide.value, otherSide.value);
-				const newProbability =
-					thisSide.probability * otherSide.probability;
-				const newSide = newSides.find(
-					(newSide) => newSide.value == newValue
-				);
-				if (newSide) {
-					newSide.probability += newProbability;
-				} else {
-					newSides.push({
-						probability: newProbability,
-						value: newValue,
-					});
-				}
-			}
+			result.#infuseOutcome({ probability, value });
+
+			return;
 		}
 
-		return new Die(newSides);
+		for (const side of dice[0].getSides()) {
+			this.#combineRecursive(
+				combineFn,
+				rolledSides.concat(side),
+				result,
+				dice.slice(1)
+			);
+		}
+	}
+
+	combine<K extends unknown[], U>(
+		combineFn: (values: DeepReadonly<[T, ...K]>) => U,
+		...dice: { [k in keyof K]: Die<K[k]> }
+	) {
+		const result = Die.#empty<U>();
+
+		const allDice = ([this] as unknown[]).concat(dice) as [
+			Die<T>,
+			...typeof dice
+		];
+
+		this.#combineRecursive(combineFn, [], result, allDice);
+
+		return result.normalize();
 	}
 
 	// TODO: https://kosrud.github.io/dice-pool-calc/classes/index.Die.html

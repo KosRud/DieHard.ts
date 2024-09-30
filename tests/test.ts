@@ -1,5 +1,4 @@
 import { assertEquals } from 'jsr:@std/assert';
-
 import { examples } from './exampleTests.ts';
 
 Deno.test('examples', async (t) => {
