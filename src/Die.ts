@@ -11,7 +11,9 @@ type DieSide<T> = { probability: number; value: T };
 class Die<T> {
 	#sides: DieSide<T>[];
 
-	getSides(roundingDigits?: number): DeepReadonly<DieSide<T>[]> {
+	getSides(
+		roundingDigits?: T extends number ? number : never
+	): DeepReadonly<DieSide<T>[]> {
 		if (!roundingDigits) {
 			return deepReadonly(this.#sides);
 		}
@@ -175,5 +177,11 @@ class Die<T> {
 		Die.#combineRecursive(combineFn, [], result, dice);
 
 		return result.normalize();
+	}
+
+	filter(fn: (value: T) => boolean): this {
+		this.#sides = this.#sides.filter((side) => fn(side.value));
+		this.normalize;
+		return this;
 	}
 }

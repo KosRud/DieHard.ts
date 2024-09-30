@@ -3,20 +3,23 @@ import { Example } from '../src/Example.ts';
 
 export { example };
 
+// creating dice inside the simulation loop is supported
+// but keeping them outside is more efficient to reduce GC allocations
 const dice = {
 	d3: Die.d(3),
 	d4: Die.d(4),
 };
 
 function run() {
-	function simulateGame(roll: RollFn) {
-		const { d3, d4 } = dice;
+	function simulateGame(diceBag: typeof dice, roll: RollFn) {
+		const { d3, d4 } = diceBag;
 
 		return roll(d3) + roll(d4);
 	}
 
 	const dieHard = new DieHard<number>((a, b) => a - b);
-	const simulationOutcomes = dieHard.simulate(simulateGame);
+	const simulationFn = (roll: RollFn) => simulateGame(dice, roll);
+	const simulationOutcomes = dieHard.simulate(simulationFn);
 
 	return simulationOutcomes.getSides(2);
 }

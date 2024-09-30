@@ -3,6 +3,8 @@ import { Example } from '../src/Example.ts';
 
 export { example };
 
+// creating dice inside the simulation loop is supported
+// but keeping them outside is more efficient to reduce GC allocations
 const dice = {
 	d3: Die.d(3),
 	d4: Die.d(4),

@@ -15,6 +15,10 @@ class DieHard<T> {
 	#outcomes: DieSide<T>[] = [];
 	#compareFn: (a: T, b: T) => number;
 
+	/**
+	 *
+	 * @param compareFn Must return `0` when arguments are equal, and non-zero when they are not equal. To have the resulting die sides sorted *(optional)*, return a negative value when the first argument is lesser than second argument, and a positive value when the first argument is greater than second argument.
+	 */
 	constructor(compareFn: (a: T, b: T) => number) {
 		this.#compareFn = compareFn;
 	}
