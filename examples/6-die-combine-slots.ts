@@ -24,8 +24,8 @@ function run() {
 	const slotC = Die.uniform(suitsWithWildcard);
 	const slotPrizeMultiplier = Die.d(4);
 
-	const result = slotPrizeMultiplier.combine(
-		([prizeMultiplier, suitA, suitB, suitC]) => {
+	const result = Die.combine(
+		([suitA, suitB, suitC, prizeMultiplier]) => {
 			switch (true) {
 				case suitA == suitB && suitB == suitC:
 					return prizeMultiplier;
@@ -35,9 +35,11 @@ function run() {
 					return 0;
 			}
 		},
+
 		slotA,
 		slotB,
-		slotC
+		slotC,
+		slotPrizeMultiplier
 	);
 	return result.sort((a, b) => a - b).getSides(2);
 }

@@ -13,8 +13,9 @@ function run() {
 	const d4 = Die.d(4);
 	const numd4 = 3;
 	const d4pool = Array.from({ length: numd4 }).map(() => d4);
-	const result = d6.combine(
+	const result = Die.combine(
 		([d6, ...d4pool]) => d6 + d4pool.reduce((a, b) => Math.max(a, b)),
+		d6,
 		...d4pool
 	);
 	return result.sort((a, b) => a - b).getSides(2);

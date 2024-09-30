@@ -75,11 +75,11 @@ class Die<T> {
 			return die;
 		}
 
-		const dice = Array.from({ length: numDice - 1 }).fill(
+		const dice = Array.from({ length: numDice }).fill(
 			die
-		) as Die<number>[];
+		) as (typeof die)[];
 
-		return die.combine((values) => values.reduce((a, b) => a + b), ...dice);
+		return Die.combine((values) => values.reduce((a, b) => a + b), ...dice);
 	}
 
 	static #empty<K>() {
@@ -117,23 +117,19 @@ class Die<T> {
 		return result.normalize();
 	}
 
-	#combineRecursive<K extends unknown[], U>(
-		combineFn: (values: DeepReadonly<[T, ...K]>) => U,
+	static #combineRecursive<T, K extends unknown[], U>(
+		combineFn: (values: DeepReadonly<K>) => U,
 		rolledSides: DeepReadonly<DieSide<unknown>[]>,
 		result: Die<U>,
 		dice: Die<any>[]
 	) {
 		if (dice.length == 0) {
-			const rolledSidesTyped = rolledSides as [
-				DieSide<T>,
-				...{ [k in keyof K]: DieSide<K[k]> }
-			];
-			const probability = rolledSidesTyped.reduce(
+			const probability = rolledSides.reduce(
 				(probability, nextSide) => probability * nextSide.probability,
 				1
 			);
-			const rolledValues = rolledSidesTyped.map((side) => side.value);
-			const value = combineFn(rolledValues as DeepReadonly<[T, ...K]>);
+			const rolledValues = rolledSides.map((side) => side.value);
+			const value = combineFn(rolledValues as DeepReadonly<K>);
 
 			result.#infuseOutcome({ probability, value });
 
@@ -150,18 +146,13 @@ class Die<T> {
 		}
 	}
 
-	combine<K extends unknown[], U>(
-		combineFn: (values: DeepReadonly<[T, ...K]>) => U,
+	static combine<T, K extends unknown[], U>(
+		combineFn: (values: DeepReadonly<K>) => U,
 		...dice: { [k in keyof K]: Die<K[k]> }
 	) {
 		const result = Die.#empty<U>();
 
-		const allDice = ([this] as unknown[]).concat(dice) as [
-			Die<T>,
-			...typeof dice
-		];
-
-		this.#combineRecursive(combineFn, [], result, allDice);
+		Die.#combineRecursive(combineFn, [], result, dice);
 
 		return result.normalize();
 	}
