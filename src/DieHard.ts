@@ -14,17 +14,40 @@ class DieHard<T> {
 	#roller = new Roller(this.#scheduleSimulation.bind(this));
 	#outcomes: DieSide<T>[] = [];
 	#compareFn: (a: T, b: T) => number;
+	/**
+	 * [-1, 1]
+	 */
+	#precision: number;
 
 	/**
 	 *
 	 * @param compareFn Must return `0` when arguments are equal, and non-zero when they are not equal. To have the resulting die sides sorted *(optional)*, return a negative value when the first argument is lesser than second argument, and a positive value when the first argument is greater than second argument.
+	 * @param precision [0, 1]
 	 */
-	constructor(compareFn: (a: T, b: T) => number) {
+	constructor(compareFn: (a: T, b: T) => number, precision?: number) {
 		this.#compareFn = compareFn;
+		this.#precision = precision == undefined ? 1 : precision * 2 - 1;
+	}
+
+	#samplingThreshold(probability: number): number {
+		if (this.#precision >= 0) {
+			return (
+				this.#precision + probability - this.#precision * probability
+			);
+		}
+		return probability * (this.#precision + 1);
 	}
 
 	#scheduleSimulation(replay: RollerReplay, ...sides: DieSide<unknown>[]) {
+		const curProbability = replay.reduce(
+			(probability, nextSide) => probability * nextSide.probability,
+			1
+		);
+		const probabilityThreshold = this.#samplingThreshold(curProbability);
 		for (const side of sides) {
+			if (Math.random() > probabilityThreshold) {
+				continue;
+			}
 			this.#schedule.push(replay.concat(side));
 		}
 	}

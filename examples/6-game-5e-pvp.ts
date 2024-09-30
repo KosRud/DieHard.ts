@@ -93,7 +93,7 @@ class Fighter extends Creature {
 		// Fighting Style: Great Weapon Fighting
 		// Reroll 1 and 2
 		// BUG: roll(d6) evaluated into a single value right here
-		const d6gwf = d6.interpret((x) => (x <= 2 ? roll(d6) : x));
+		const d6gwf = d6.reroll((x) => (x <= 2 ? d6 : Die.one(x)));
 		// 2d6r<2[greatsword, two-weapon fighting]+3[strength mod]
 		const greatswordDamageDie = Die.reduce(
 			[d6gwf, d6gwf],
@@ -110,15 +110,13 @@ class Fighter extends Creature {
 				ac: 16, // chain mail
 				hp: 13,
 				toHit: 3,
-				damage: greatswordDamageDie.lod(3),
+				damage: greatswordDamageDie,
 			},
 			roll
 		);
 
 		// 1d10+1[fighter level]
-		this.#secondWindDie = Die.d(10)
-			.lod(3)
-			.interpret((x) => x + 1);
+		this.#secondWindDie = Die.d(10).interpret((x) => x + 1);
 
 		this.attackDie = Die.reduce([this.attackDie, this.attackDie], (a, b) =>
 			Math.max(a, b)
@@ -150,7 +148,7 @@ class Rogue extends Creature {
 				ac: 12 + dex, // studded leather armor
 				hp: 11,
 				toHit: dex,
-				damage: sneakRapierDamageDie.lod(3),
+				damage: sneakRapierDamageDie,
 			},
 			roll
 		);
@@ -189,7 +187,7 @@ function run() {
 			return 'initiative tie'; // don't count these situations
 		}
 
-		for (let turn = 1; turn <= 2; turn++) {
+		for (let turn = 1; turn <= 8; turn++) {
 			const [attacker, defender] =
 				(turn + fighterFirst) % 2 == 0
 					? [fighter, rogue]
@@ -205,7 +203,7 @@ function run() {
 		return 'draw';
 	}
 
-	const dieHard = new DieHard<string>((a, b) => a.localeCompare(b));
+	const dieHard = new DieHard<string>((a, b) => a.localeCompare(b), 0.8);
 	const simulationOutcomes = dieHard.simulate(simulateGame);
 
 	return simulationOutcomes.getSides();

@@ -45,13 +45,17 @@ class Die<T> {
 		this.#sides = sides;
 	}
 
-	static uniform<T>(values: readonly T[]): Die<T> {
+	static outcomes<T>(values: readonly T[]): Die<T> {
 		const probability = 1 / values.length;
 		const sides = values.map((side) => ({
 			probability,
 			value: side,
 		}));
 		return new Die(sides);
+	}
+
+	static one<T>(value: T): Die<T> {
+		return new Die([{ value, probability: 1 }]);
 	}
 
 	static d(numSides: number): Die<number> {
@@ -79,6 +83,19 @@ class Die<T> {
 		) as (typeof die)[];
 
 		return Die.reduce(dice, (a, b) => a + b);
+	}
+
+	reroll<K>(fn: (value: DeepReadonly<T>) => Die<K>): Die<K> {
+		const result = Die.#empty<K>();
+
+		for (const side of this.getSides()) {
+			const rerollDie = fn(side.value);
+			for (const side of rerollDie.#sides) {
+				result.#infuseOutcome(side);
+			}
+		}
+
+		return result.normalize();
 	}
 
 	static #empty<K>() {
@@ -157,40 +174,6 @@ class Die<T> {
 			parts.push(arr.slice(-(arr.length % n)));
 		}
 		return parts;
-	}
-
-	lod(level: number): T extends number ? this : never;
-	lod(
-		level: number,
-		combine: (sides: DeepReadonly<DieSide<T>[]>) => DieSide<T>,
-		compareFn: (a: T, b: T) => number
-	): this;
-	lod(
-		level: number,
-		combine?: (sides: DeepReadonly<DieSide<T>[]>) => DieSide<T>,
-		compareFn?: (a: T, b: T) => number
-	) {
-		function compareNumbers(a: number, b: number) {
-			return a - b;
-		}
-		const nonNummCompareFn =
-			compareFn ?? (compareNumbers as (a: T, b: T) => number);
-		this.sort(nonNummCompareFn);
-		const parts = this.#partition(this.#sides, level);
-		function combineNumbers(sides: DeepReadonly<DieSide<number>[]>) {
-			let probability = 0;
-			let value = 0;
-			for (const side of sides) {
-				probability += side.probability;
-				value += side.value;
-			}
-			value /= sides.length;
-			return { probability, value };
-		}
-		const nonNullCombine =
-			combine ?? (combineNumbers as NonNullable<typeof combine>);
-		this.#sides = parts.map((part) => nonNullCombine(deepReadonly(part)));
-		return this;
 	}
 
 	static reduce<T>(

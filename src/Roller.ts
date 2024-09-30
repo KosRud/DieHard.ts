@@ -2,8 +2,12 @@ export { Roller };
 export type { RollerReplay, RollFn };
 
 import { DieSide, Die } from './Die.ts';
-import { DeepReadonly } from 'MadCakeUtil/mod.ts';
+import { deepReadonly, DeepReadonly } from 'MadCakeUtil/mod.ts';
 import { useDefer } from 'MadCakeUtil/useDefer.ts';
+
+function randomInt(max: number) {
+	return Math.floor(Math.random() * max);
+}
 
 type ScheduleSimulationCallback = (
 	replay: RollerReplay,
@@ -54,15 +58,18 @@ class Roller {
 	 * Return first side. Schedule all possible alternatives to be simulated.
 	 */
 	#newRoll<T>(die: Die<T>): DeepReadonly<T> {
-		const sides = die.getSides();
+		const sidesCopy = die.getSides().concat() as DieSide<T>[];
+
+		const randomId = randomInt(sidesCopy.length);
+		const randomSide = sidesCopy.splice(randomId, 1)[0];
 
 		// schedule simulation for all sides except first
-		this.#scheduleSimulation(this.#replay, ...sides.slice(1));
+		this.#scheduleSimulation(this.#replay, ...sidesCopy);
 
 		// record current roll in history
-		this.#replay.push(sides[0]);
+		this.#replay.push(randomSide);
 
 		// return first side
-		return sides[0].value;
+		return deepReadonly(randomSide.value);
 	}
 }

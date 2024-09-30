@@ -19,9 +19,9 @@ function run() {
 	const suits = ['clubs', 'diamonds', 'hearts', 'spades'] as const;
 	const suitsWithWildcard = [...suits, 'wildcard'] as const;
 
-	const slotA = Die.uniform(suits);
-	const slotB = Die.uniform(suits);
-	const slotC = Die.uniform(suitsWithWildcard);
+	const slotA = Die.outcomes(suits);
+	const slotB = Die.outcomes(suits);
+	const slotC = Die.outcomes(suitsWithWildcard);
 	const slotPrizeMultiplier = Die.d(4);
 
 	const result = Die.combine(
