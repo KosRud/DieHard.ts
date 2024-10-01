@@ -196,6 +196,40 @@ class Die<T> {
 		});
 	}
 
+	lod(level: number): T extends number ? this : never;
+	lod(
+		level: number,
+		combine: (sides: DeepReadonly<DieSide<T>[]>) => DieSide<T>,
+		compareFn: (a: T, b: T) => number
+	): this;
+	lod(
+		level: number,
+		combine?: (sides: DeepReadonly<DieSide<T>[]>) => DieSide<T>,
+		compareFn?: (a: T, b: T) => number
+	) {
+		function compareNumbers(a: number, b: number) {
+			return a - b;
+		}
+		const nonNummCompareFn =
+			compareFn ?? (compareNumbers as (a: T, b: T) => number);
+		this.sort(nonNummCompareFn);
+		const parts = this.#partition(this.#sides, level);
+		function combineNumbers(sides: DeepReadonly<DieSide<number>[]>) {
+			let probability = 0;
+			let value = 0;
+			for (const side of sides) {
+				probability += side.probability;
+				value += side.value;
+			}
+			value /= sides.length;
+			return { probability, value };
+		}
+		const nonNullCombine =
+			combine ?? (combineNumbers as NonNullable<typeof combine>);
+		this.#sides = parts.map((part) => nonNullCombine(deepReadonly(part)));
+		return this;
+	}
+
 	static combine<T, K extends unknown[], U>(
 		dice: { [k in keyof K]: Die<K[k]> },
 		combineFn: (values: DeepReadonly<K>) => U

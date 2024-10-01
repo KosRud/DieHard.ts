@@ -95,10 +95,9 @@ class Fighter extends Creature {
 		// BUG: roll(d6) evaluated into a single value right here
 		const d6gwf = d6.reroll((x) => (x <= 2 ? d6 : Die.one(x)));
 		// 2d6r<2[greatsword, two-weapon fighting]+3[strength mod]
-		const greatswordDamageDie = Die.reduce(
-			[d6gwf, d6gwf],
-			(a, b) => a + b
-		).interpret((x) => x + 3);
+		const greatswordDamageDie = Die.reduce([d6gwf, d6gwf], (a, b) => a + b)
+			.interpret((x) => x + 3)
+			.lod(2);
 
 		// d20+2[dexterity mod]
 		const initiativeDie = d20.interpret((x) => x + 2);
@@ -116,7 +115,9 @@ class Fighter extends Creature {
 		);
 
 		// 1d10+1[fighter level]
-		this.#secondWindDie = Die.d(10).interpret((x) => x + 1);
+		this.#secondWindDie = Die.d(10)
+			.interpret((x) => x + 1)
+			.lod(2);
 
 		this.attackDie = Die.reduce([this.attackDie, this.attackDie], (a, b) =>
 			Math.max(a, b)
@@ -133,10 +134,9 @@ class Rogue extends Creature {
 		const dex = 3;
 
 		// 1d8[rapier]+1d6[sneak attack]+3[dexterity mod]
-		const sneakRapierDamageDie = Die.reduce(
-			[d6, d8],
-			(a, b) => a + b
-		).interpret((x) => x + dex);
+		const sneakRapierDamageDie = Die.reduce([d6, d8], (a, b) => a + b)
+			.interpret((x) => x + dex)
+			.lod(2);
 
 		// d20+3[dexterity mod]
 		const initiativeDie = d20.interpret((x) => x + dex);
@@ -203,7 +203,7 @@ function run() {
 		return 'draw';
 	}
 
-	const dieHard = new DieHard<string>((a, b) => a.localeCompare(b), 0.8);
+	const dieHard = new DieHard<string>((a, b) => a.localeCompare(b), 0.95);
 	const simulationOutcomes = dieHard.simulate(simulateGame);
 
 	return simulationOutcomes.getSides();
