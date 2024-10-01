@@ -2,6 +2,7 @@ export { Die };
 export type { DieSide };
 
 import { DeepReadonly, deepReadonly } from 'MadCakeUtil/mod.ts';
+import { partition } from './util.ts';
 
 type DieSide<T> = { probability: number; value: T };
 
@@ -165,17 +166,6 @@ class Die<T> {
 		}
 	}
 
-	#partition<T>(arr: T[], n: number) {
-		const parts: T[][] = [];
-		for (let i = 0; i <= arr.length - n; i += n) {
-			parts.push(arr.slice(i, i + n));
-		}
-		if (arr.length % n) {
-			parts.push(arr.slice(-(arr.length % n)));
-		}
-		return parts;
-	}
-
 	static reduce<T>(
 		dice: Die<T>[],
 		fn: (cur: DeepReadonly<T>, next: DeepReadonly<T>) => T
@@ -213,7 +203,7 @@ class Die<T> {
 		const nonNummCompareFn =
 			compareFn ?? (compareNumbers as (a: T, b: T) => number);
 		this.sort(nonNummCompareFn);
-		const parts = this.#partition(this.#sides, level);
+		const parts = partition(this.#sides, level);
 		function combineNumbers(sides: DeepReadonly<DieSide<number>[]>) {
 			let probability = 0;
 			let value = 0;
